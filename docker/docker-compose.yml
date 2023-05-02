@@ -1,0 +1,37 @@
+version: "3.9"
+
+services:
+  app:
+    container_name: animals_app
+    build:
+      context: .
+      dockerfile: prod/app.dockerfile
+    image: animals_app_prod
+    ports:
+      - "3000:3000"
+    links:
+      - db
+    networks:
+      - animals-network
+  db:
+    container_name: monguito_db
+    image: mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: daniel
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - mongo-data:/data/db # For MongoDB
+      # mysql-data:/var/lib/mysql # For MySQL
+      # postgres-data:/var/lib/postgresql/data # For Postgres
+    networks:
+      - animals-network
+
+volumes:
+  mongo-data:
+    name: mongo_data
+
+networks:
+  animals-network:
+    name: animals_network
